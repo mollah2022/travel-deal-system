@@ -62,7 +62,7 @@ def get_deal(deal_id):
     if error:
         return jsonify({
             "status": "error",
-            "message": error["error"][0]
+            "message": error["errors"][0]
         }),404
 
     return jsonify({

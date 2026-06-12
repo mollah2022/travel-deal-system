@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from routes.deal_routes import deal_bp
 
 def create_app():
@@ -19,6 +19,38 @@ def create_app():
             "status":"success",
             "message":"Travel Deal Management System is running!"
         }, 200
+
+
+
+    # ---------- Global Error Handlers ----------
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            "status": "error",
+            "message": "The requested resource was not found."
+        }), 404
+
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return jsonify({
+            "status": "error",
+            "message": "This HTTP method is not allowed for this endpoint."
+        }), 405
+
+    @app.errorhandler(400)
+    def bad_request(error):
+        return jsonify({
+            "status": "error",
+            "message": "Bad request. Please check your input."
+        }), 400
+
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        return jsonify({
+            "status": "error",
+            "message": "Something went wrong on the server. Please try again later."
+        }), 500
 
     return app
 

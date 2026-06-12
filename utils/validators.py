@@ -16,7 +16,7 @@ def validate_deal_data(data):
 
     #check required fields exist 
     
-    required_fields = ["destination", "travel_type", "price", "duration"]
+    required_fields = ["destination", "price", "platform", "rating", "travel_type"]
     for field in required_fields:
         if field not in data:
             errors.append(f"'{field}' field is required.")
@@ -34,7 +34,7 @@ def validate_deal_data(data):
         errors.append("price must be a positive number.")
 
     #validate rating include 1 to 5
-    if (data["rating"],(int,float)) or not (1 <= data["rating"] <= 5):
+    if not isinstance (data["rating"],(int,float)) or not (1 <= data["rating"] <= 5):
         errors.append("rating must be between 1 and 5.")
 
     #validate travel type it must be inside the allowed list
@@ -43,7 +43,7 @@ def validate_deal_data(data):
             f"travel_type musr be one of {VALID_TRAVEL_TYPES}."
         )
 
-    if not isinstance(data["platfrom"],str) or data["platfrom"].strip() == "":
+    if not isinstance(data["platform"],str) or data["platform"].strip() == "":
         errors.append("platfrom can not be empty.")
 
     return (len(errors) == 0), errors

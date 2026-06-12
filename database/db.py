@@ -19,12 +19,12 @@ class DealRepository:
             "id": self._next_id,
             "destination": deal_data["destination"],
             "price": deal_data["price"],
-            "platform": deal_data["platfrom"],
+            "platform": deal_data["platform"],
             "rating": deal_data["rating"],
             "travel_type": deal_data["travel_type"]
         }
 
-        self.deals.append(deal)
+        self._deals.append(deal)
         self._next_id += 1
         return deal
 

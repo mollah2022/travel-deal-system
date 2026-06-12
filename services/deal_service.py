@@ -34,7 +34,7 @@ class DealService:
 
         return deal_repository.get_all_deals()
 
-    def fet_deal_by_id(self,deal_id):
+    def get_deal_by_id(self,deal_id):
         """
         Finds and returns a single deal by ID.
         Returns:
