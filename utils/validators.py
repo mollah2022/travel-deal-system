@@ -30,11 +30,11 @@ def validate_deal_data(data):
         errors.append("destination can not be empty.")
 
     #validate price - it must be a positive number
-    if not isinstance(data["price"]),(int,float) or data["price"] <= 0:
+    if not isinstance(data["price"],(int,float)) or data["price"] <= 0:
         errors.append("price must be a positive number.")
 
     #validate rating include 1 to 5
-    if data["rating"],(int,float) or not (1 <= data.["rating"] <= 5):
+    if (data["rating"],(int,float)) or not (1 <= data["rating"] <= 5):
         errors.append("rating must be between 1 and 5.")
 
     #validate travel type it must be inside the allowed list

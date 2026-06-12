@@ -6,7 +6,7 @@ class DealRepository:
     if we keep the same methods,we will not need to change the service layer.
     """
 
-    def__init__(self):
+    def __init__(self):
         self._deals = []        # list of deal dictionaries
         self._next_id = 1      #  auto-increment id counter
 
