@@ -7,7 +7,7 @@ class DealRepository:
     """
 
     def__init__(self):
-        self.deals = []        # list of deal dictionaries
+        self._deals = []        # list of deal dictionaries
         self._next_id = 1      #  auto-increment id counter
 
     def add_deal(self,deal_data):
