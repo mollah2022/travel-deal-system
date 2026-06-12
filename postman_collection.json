@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "Travel Deal Management System",
+    "description": "API collection for Travel Deal Management System (W3 Engineers - Day 01 Assignment)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:5000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Travel Deal (Valid)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"destination\": \"Dubai\",\n  \"price\": 5000,\n  \"platform\": \"Booking\",\n  \"rating\": 4.5,\n  \"travel_type\": \"Luxury\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/deals",
+          "host": ["{{base_url}}"],
+          "path": ["deals"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Travel Deal (Invalid - Validation Test)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"destination\": \"\",\n  \"price\": -100,\n  \"platform\": \"Agoda\",\n  \"rating\": 7,\n  \"travel_type\": \"Cheap\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/deals",
+          "host": ["{{base_url}}"],
+          "path": ["deals"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Deals",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals",
+          "host": ["{{base_url}}"],
+          "path": ["deals"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Single Deal",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/1",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Single Deal (Not Found)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/999",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "999"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
