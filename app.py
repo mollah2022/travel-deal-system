@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from routes.deal_routes import deal_bp
+from database.models import db
 
 def create_app():
     """
@@ -8,6 +9,18 @@ def create_app():
     After that we will register blueprints(routes) in this app
     """
     app = Flask(__name__)
+
+    # ---------- Database Configuration ----------
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///travel_deals.db"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+    # Initialize SQLAlchemy with this app
+    db.init_app(app)
+
+
+    # Create tables if they don't exist (runs inside app context)
+    with app.app_context():
+        db.create_all()
 
 
     #Register Blueprint

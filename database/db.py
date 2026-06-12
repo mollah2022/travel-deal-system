@@ -1,48 +1,48 @@
+from database.models import db, Deal
+
+
 class DealRepository:
-
     """
-    This is an in-memory data store for Travel Deals.
-    Later,we can replace it with a real database.
-    if we keep the same methods,we will not need to change the service layer.
+    Travel Deal database operations are handled using SQLAlchemy ORM.  
+    The method names are kept the same (add_deal, get_all_deals, get_deal_by_id)  
+    so that no changes are needed in the service layer.
     """
 
-    def __init__(self):
-        self._deals = []        # list of deal dictionaries
-        self._next_id = 1      #  auto-increment id counter
-
-    def add_deal(self,deal_data):
+    def add_deal(self, deal_data):
         """
-         Adds a new deal and returns the deal object with its id.
+        Adds a new deal and returns the deal dict with its id.
         """
+        new_deal = Deal(
+            destination=deal_data["destination"],
+            price=deal_data["price"],
+            platform=deal_data["platform"],
+            rating=deal_data["rating"],
+            travel_type=deal_data["travel_type"]
+        )
 
-        deal = {
-            "id": self._next_id,
-            "destination": deal_data["destination"],
-            "price": deal_data["price"],
-            "platform": deal_data["platform"],
-            "rating": deal_data["rating"],
-            "travel_type": deal_data["travel_type"]
-        }
+        db.session.add(new_deal)
+        db.session.commit()
 
-        self._deals.append(deal)
-        self._next_id += 1
-        return deal
+        return new_deal.to_dict()
 
     def get_all_deals(self):
         """
         Returns a list of all deals.
         """
-        return self._deals
-    
-    def get_deal_by_id(self,deal_id):
-        """
-        Returns a deal by its id, or None if not found.
-        """
-        for deal in self._deals:
-            if deal["id"] == deal_id:
-                return deal
-        return None
+        all_deals = Deal.query.all()
+        return [deal.to_dict() for deal in all_deals]
 
-#one share instance.it will be imported and used in the service layer.
+    def get_deal_by_id(self, deal_id):
+        """
+        Returns a deal dict by its id, or None if not found.
+        """
+        deal = Deal.query.get(deal_id)
 
+        if deal is None:
+            return None
+
+        return deal.to_dict()
+
+
+# Single shared instance - it will be imported and used in the service layer.
 deal_repository = DealRepository()
