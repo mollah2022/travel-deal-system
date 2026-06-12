@@ -21,7 +21,6 @@ def create_app():
         }, 200
 
 
-
     # ---------- Global Error Handlers ----------
 
     @app.errorhandler(404)
