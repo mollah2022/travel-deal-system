@@ -35,7 +35,7 @@ project/
 Step 1: Clone the project from GitHub
 
 ```bash
-git clone <your-repo-url>
+git clone <https://github.com/mollah2022/travel-deal-system.git>
 ```
 
 Step 2: Go into the project folder
