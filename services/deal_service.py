@@ -1,5 +1,11 @@
-from database.db import deal_repository
-from utils.validators import validate_deal_data
+from database.db import deal_repository, recently_viewed_repository
+from utils.validators import (
+    validate_deal_data,
+    validate_search_params,
+    validate_filter_params,
+    validate_sort_params
+)
+from utils.logger import logger
 
 class DealService:
     """
@@ -47,6 +53,10 @@ class DealService:
         if deal is None:
             return None,{"errors":[f"Deal with is {deal_id} not found."]}
 
+        # Recently viewed e add kora
+        recently_viewed_repository.add(deal)
+        logger.info(f"Deal fetched successfully - ID: {deal_id}")
+
         return deal,None
     
     def search_deals(self, params):
@@ -60,12 +70,18 @@ class DealService:
         is_valid, errors = validate_search_params(params)
 
         if not is_valid:
-            logger.worning(f"Search validation failed - errors: {errors}")
+            logger.warning(f"Search validation failed - errors: {errors}")
             return None, {"errors":errors}
         
         destination = params.get("destination", "").strip()
         platform = params.get("platform", "").strip()
         travel_type = params.get("travel_type", "").strip()
+
+        results = deal_repository.search_deals(
+            destination=destination or None,
+            platform=platform or None,
+            travel_type=travel_type or None
+        )
 
 
         if not resilts:
@@ -97,7 +113,7 @@ class DealService:
             max_price = max_price
         )
 
-        logger,info(f"Filter successfull - {len(results)} result(s) found")
+        logger.info(f"Filter successfull - {len(results)} result(s) found")
         return results, None
 
     def sort_deals(self, params):
@@ -122,16 +138,15 @@ class DealService:
         logger.info(f"Sort successful - sorted by '{sort_by}' ({order}), {len(results)} result(s)")
         return results, None
 
-        def get_recently_viewed(self):
-            """
-            Returns recently viewed deals.
-            Returns: list of dict
-            """
+    def get_recently_viewed(self):
+        """
+        Returns recently viewed deals.
+        Returns: list of dict
+        """
 
-            recent = recently_viewed_repository.get_all()
-            logger.info(f"Recently viewed deals fetched - total : {len(recent)}")
-            return recent
-
+        recent = recently_viewed_repository.get_all()
+        logger.info(f"Recently viewed deals fetched - total: {len(recent)}")
+        return recent
 
 
 #single shared instance this instance will be used in the routes.

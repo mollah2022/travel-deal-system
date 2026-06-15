@@ -1,4 +1,5 @@
 from database.models import db, Deal
+from collections import deque
 
 
 class DealRepository:
@@ -43,7 +44,7 @@ class DealRepository:
 
         return deal.to_dict()
 
-    def search_deals(self,destinatuin=None, platform=None, travel_type=None):
+    def search_deals(self,destination=None, platform=None, travel_type=None):
         """
         Partial, case-insensitive search by destination, platform, travel_type.
         Returns: list of dict
@@ -59,6 +60,11 @@ class DealRepository:
         if travel_type:
             query = query.filter(
                 Deal.travel_type.ilike(f"%{travel_type}%")
+            )
+
+        if platform:
+            query = query.filter(
+                Deal.platform.ilike(f"%{platform}%")
             )
         
         results = query.all()
@@ -104,6 +110,10 @@ class RecentlyViewedRepository:
     In-memory resets on server restart(intentional).
     """
 
+    def __init__(self):
+        # deque with maxlen=10 if we add 11th automatically remove 1st
+        self._recent = deque(maxlen=10)
+
     def add(self, deal):
         """
         Adds a deal to recently viewed list.
@@ -127,4 +137,4 @@ class RecentlyViewedRepository:
 
 # Single shared instance - it will be imported and used in the service layer.
 deal_repository = DealRepository()
-recently_viewed_respository = RecentlyViewedRepository()
+recently_viewed_repository = RecentlyViewedRepository()
