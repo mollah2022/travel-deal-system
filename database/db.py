@@ -1,4 +1,4 @@
-from database.models import db, Deal
+from database.models import db, Deal, RecentlyViewed 
 from collections import deque
 
 
@@ -103,36 +103,46 @@ class DealRepository:
         results = Deal.query.order_by(sort_column).all()
         return [deal.to_dict() for deal in results]
 
-
 class RecentlyViewedRepository:
     """
-    Tracks recently viewed deals (last 10, no duplicates).
-    In-memory resets on server restart(intentional).
+    Recently viewed deals - SQLAlchemy diye database e save kore.
+    Last 10 ta track kore, duplicate hole purana ta delete kore notun ta add kore.
     """
-
-    def __init__(self):
-        # deque with maxlen=10 if we add 11th automatically remove 1st
-        self._recent = deque(maxlen=10)
 
     def add(self, deal):
         """
-        Adds a deal to recently viewed list.
-        If it already exists, remove it first and then add it again at the top.
+        Deal ke recently viewed e add kore.
+        Same deal already thakle age ta delete kore notun kore add kore.
         """
-        # Check for duplicates - whether the same id already exists
-        self._recent = deque(
-            [d for d in self._recent if d["id"] != deal["id"]],
-            maxlen=10
-        )
-        self._recent.append(deal)
+        # Duplicate check - same deal_id already ache kina, thakle delete koro
+        existing = RecentlyViewed.query.filter_by(deal_id=deal["id"]).first()
+        if existing:
+            db.session.delete(existing)
+            db.session.commit()
+
+        # Notun entry add koro
+        new_view = RecentlyViewed(deal_id=deal["id"])
+        db.session.add(new_view)
+        db.session.commit()
+
+        # 10 er beshi thakle oldest ta delete koro
+        total = RecentlyViewed.query.count()
+        if total > 10:
+            oldest = RecentlyViewed.query.order_by(
+                RecentlyViewed.viewed_at.asc()
+            ).first()
+            db.session.delete(oldest)
+            db.session.commit()
 
     def get_all(self):
         """
-        Returns recently viewed deals most recent first
+        Recently viewed deals return kore - most recent first.
         """
+        recent = RecentlyViewed.query.order_by(
+            RecentlyViewed.viewed_at.desc()
+        ).all()
+        return [r.to_dict() for r in recent]
 
-        return list(reversed(self._recent))
-    
 
 
 # Single shared instance - it will be imported and used in the service layer.
