@@ -28,7 +28,7 @@ A REST API built with Flask to manage travel deals. You can add deals, view them
 Step 1: Clone the project from GitHub
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/mollah2022/travel-deal-system.git
 ```
 
 Step 2: Go into the project folder
@@ -64,7 +64,7 @@ pip install -r requirements.txt
 Step 6: Run the app
 
 ```bash
-python app.py
+python3 app.py
 ```
 
 The app will start at: `http://127.0.0.1:5000/`
