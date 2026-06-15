@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Travel Deal Management System",
-    "description": "API collection for Travel Deal Management System (W3 Engineers - Day 01 Assignment)",
+    "description": "API collection for Travel Deal Management System (W3 Engineers - Day 01 & 02 Assignment)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -104,6 +104,265 @@
           "raw": "{{base_url}}/deals/999",
           "host": ["{{base_url}}"],
           "path": ["deals", "999"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Deals (by destination)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/search?destination=dub",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "search"],
+          "query": [
+            {
+              "key": "destination",
+              "value": "dub"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Deals (by platform)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/search?platform=booking",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "search"],
+          "query": [
+            {
+              "key": "platform",
+              "value": "booking"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Deals (by travel_type)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/search?travel_type=Luxury",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "search"],
+          "query": [
+            {
+              "key": "travel_type",
+              "value": "Luxury"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Deals (Invalid - No Params)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/search",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "search"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Filter Deals (min and max price)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/filter?min_price=1000&max_price=5000",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "filter"],
+          "query": [
+            {
+              "key": "min_price",
+              "value": "1000"
+            },
+            {
+              "key": "max_price",
+              "value": "5000"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Filter Deals (min price only)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/filter?min_price=2000",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "filter"],
+          "query": [
+            {
+              "key": "min_price",
+              "value": "2000"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Filter Deals (Invalid - max less than min)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/filter?min_price=5000&max_price=1000",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "filter"],
+          "query": [
+            {
+              "key": "min_price",
+              "value": "5000"
+            },
+            {
+              "key": "max_price",
+              "value": "1000"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Filter Deals (Invalid - negative price)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/filter?min_price=-500&max_price=5000",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "filter"],
+          "query": [
+            {
+              "key": "min_price",
+              "value": "-500"
+            },
+            {
+              "key": "max_price",
+              "value": "5000"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Sort Deals (price asc)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/sort?sort_by=price&order=asc",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "sort"],
+          "query": [
+            {
+              "key": "sort_by",
+              "value": "price"
+            },
+            {
+              "key": "order",
+              "value": "asc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Sort Deals (rating desc)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/sort?sort_by=rating&order=desc",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "sort"],
+          "query": [
+            {
+              "key": "sort_by",
+              "value": "rating"
+            },
+            {
+              "key": "order",
+              "value": "desc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Sort Deals (Invalid - unknown field)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/sort?sort_by=unknown",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "sort"],
+          "query": [
+            {
+              "key": "sort_by",
+              "value": "unknown"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Sort Deals (Invalid - wrong order)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/sort?sort_by=price&order=random",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "sort"],
+          "query": [
+            {
+              "key": "sort_by",
+              "value": "price"
+            },
+            {
+              "key": "order",
+              "value": "random"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Recently Viewed Deals",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deals/recent",
+          "host": ["{{base_url}}"],
+          "path": ["deals", "recent"]
         }
       },
       "response": []

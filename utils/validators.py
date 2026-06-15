@@ -63,9 +63,9 @@ def validate_search_params(params):
 
     errors = []
 
-    destination = params.get("desrination", "").strip()
+    destination = params.get("destination", "").strip()
     platform = params.get("platform", "").strip()
-    travel_type = params.get("tavel_type", "").strip()
+    travel_type = params.get("travel_type", "").strip()
 
 
     # At least one search param must be provided

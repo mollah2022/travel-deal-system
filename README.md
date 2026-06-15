@@ -1,34 +1,27 @@
 # Travel Deal Management System
 
-This is a simple Flask project. It lets you add and view travel deals using REST APIs.
+A REST API built with Flask to manage travel deals. You can add deals, view them, search, filter, sort, and track recently viewed deals.
 
 ## What this project does
 
 - Add a new travel deal
 - See all travel deals
-- See one travel deal by its ID
-- Check input data (validation)
-- Save data in a database (SQLite + SQLAlchemy)
+- See one travel deal by ID
+- Search deals (partial, case-insensitive)
+- Filter deals by price range
+- Sort deals by field
+- Track recently viewed deals
+- Save data permanently (SQLite + SQLAlchemy)
+- Log all API activity (console + file)
 
 ## Tech used
 
 - Python 3
 - Flask
-- SQLAlchemy (ORM)
-- SQLite (database)
+- Flask-SQLAlchemy
+- SQLite
 
-## Project Folders
-
-```
-project/
-├── app.py              # main file, starts the app
-├── routes/             # API endpoints (URLs)
-├── services/           # business logic
-├── utils/              # validation rules
-├── database/           # models and database code
-├── requirements.txt    # list of packages
-└── README.md
-```
+## Project Structure
 
 ## How to Install and Run
 
@@ -44,7 +37,7 @@ Step 2: Go into the project folder
 cd travel-deal-system
 ```
 
-Step 3: Create a virtual environment (this keeps packages separate)
+Step 3: Create a virtual environment
 
 ```bash
 python3 -m venv venv
@@ -56,7 +49,7 @@ Step 4: Turn on the virtual environment
 source venv/bin/activate
 ```
 
-On Windows, use this instead:
+On Windows:
 
 ```bash
 venv\Scripts\activate
@@ -74,32 +67,31 @@ Step 6: Run the app
 python app.py
 ```
 
-The app will start at:
+The app will start at: `http://127.0.0.1:5000/`
 
-```
-http://127.0.0.1:5000/
-```
+## Database Info
 
-## Database Connection (SQLite)
-
-This project uses **SQLite**. SQLite is a simple database that saves data in one file.
-
-- You do not need to install any database software.
-- When you run `python app.py` for the first time, a file named `travel_deals.db` is created automatically inside the project folder.
-- This file holds all your travel deals.
-- The connection is set up in `app.py` using this line:
+- Uses SQLite - no separate database software needed
+- On first run, a file `travel_deals.db` is created automatically
+- Data stays saved even after server restart
+- Connection is set in `app.py`:
 
 ```python
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///travel_deals.db"
 ```
 
-- Tables are created automatically with this line:
+- Tables are created automatically:
 
 ```python
 db.create_all()
 ```
 
-So you don't need to write any SQL by hand. The data stays saved even after you stop and start the app again.
+## Logging Info
+
+- All API activity is logged automatically
+- Logs appear in terminal and also saved in `logs/app.log` file
+- Log format: `[date time] LEVEL - message`
+- Example:
 
 ## API List
 
@@ -107,7 +99,7 @@ So you don't need to write any SQL by hand. The data stays saved even after you 
 
 **POST** `/deals`
 
-Send this as JSON:
+Request body:
 
 ```json
 {
@@ -119,39 +111,88 @@ Send this as JSON:
 }
 ```
 
-### 2. Get All Travel Deals
+Success response (201):
+
+```json
+{
+    "status": "success",
+    "message": "Travel deal created successfully.",
+    "data": {
+        "id": 1,
+        "destination": "Dubai",
+        "price": 5000,
+        "platform": "Booking",
+        "rating": 4.5,
+        "travel_type": "Luxury"
+    }
+}
+```
+
+### 2. Get All Deals
 
 **GET** `/deals`
 
-### 3. Get One Travel Deal
+### 3. Get One Deal
 
 **GET** `/deals/<id>`
 
 Example: `/deals/1`
 
+### 4. Search Deals
+
+**GET** `/deals/search`
+
+At least one query parameter required:
+
+### 5. Filter Deals by Price
+
+**GET** `/deals/filter`
+
+### 6. Sort Deals
+
+**GET** `/deals/sort`
+
+### 7. Recently Viewed Deals
+
+**GET** `/deals/recent`
+
+Returns last 10 viewed deals, most recent first.
+A deal is tracked when you access `GET /deals/<id>`.
+
 ## Validation Rules
 
+### Creating a deal:
 - `destination` cannot be empty
 - `price` must be more than 0
 - `rating` must be between 1 and 5
 - `travel_type` must be one of: `Budget`, `Luxury`, `Adventure`, `Family`
 - `platform` cannot be empty
 
+### Search:
+- At least one of `destination`, `platform`, or `travel_type` required
+- If `travel_type` given, must be a valid type
+
+### Filter:
+- At least one of `min_price` or `max_price` required
+- Both must be positive numbers
+- `max_price` cannot be less than `min_price`
+
+### Sort:
+- `sort_by` is required, must be: `price`, `rating`, or `destination`
+- `order` must be `asc` or `desc`
+
 ## Error Responses
-
-If something is wrong, the API gives a clear error message and a status code:
-
-- `400` - Bad input data
-- `404` - Deal not found
-- `405` - Wrong method used
-- `500` - Server error
-
-Example error response:
 
 ```json
 {
     "status": "error",
-    "message": "Validation failed.",
-    "details": ["price must be a positive number."]
+    "message": "Error description",
+    "details": ["specific error 1", "specific error 2"]
 }
 ```
+
+Status codes:
+- `400` - Bad input / validation error
+- `404` - Deal not found
+- `405` - Wrong HTTP method
+- `500` - Server error

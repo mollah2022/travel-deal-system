@@ -84,7 +84,7 @@ class DealService:
         )
 
 
-        if not resilts:
+        if not results:
             logger.info(f"Search returned no results - params: {params}")
         else:
             logger.info(f"Search successful - {len(results)} result(s) found")
