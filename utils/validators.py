@@ -54,7 +54,6 @@ def validate_deal_data(data):
     return (len(errors) == 0), errors
 
 
-
 def validate_search_params(params):
     """
     validate search query parameters.
@@ -118,6 +117,7 @@ def validate_filter_params(params):
         errors.append("min_price and max_price must be valid numbers.")
 
     return (len(errors) == 0), errors
+
 
 def validate_sort_params(params):
     """
