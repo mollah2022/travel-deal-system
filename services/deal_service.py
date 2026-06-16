@@ -117,6 +117,10 @@ class DealService:
         platform = params.get("platform", "").strip()
         travel_type = params.get("travel_type", "").strip()
 
+        # Log search keyword for "most searched destination" stats
+        if destination:
+            stats_repository.log_search(destination)
+
         results = deal_repository.search_deals(
             destination=destination or None,
             platform=platform or None,
