@@ -3,7 +3,8 @@ from utils.validators import (
     validate_deal_data,
     validate_search_params,
     validate_filter_params,
-    validate_sort_params
+    validate_sort_params,
+    validate_update_data
 )
 from utils.logger import logger
 
@@ -59,6 +60,45 @@ class DealService:
 
         return deal,None
     
+    def update_deal(self, deal_id, data):
+        """
+        updates an existing deal after validation.
+        Returns: (deal: dict or None, error: dict or None)
+        """
+
+        #step 1: validate using same rules as create
+        is_valid, errors = validate_update_data(data)
+
+        if not is_valid:
+            logger.warning(f"Update failed for deal ID {deal_id}")
+            return None, {"errors": errors}
+
+        #step 2: check deal exists, then update
+        update_deal = deal_repository.update_deal(deal_id, data)
+
+        if updated_deal is None:
+            logger.warning(f"Update failed - deal ID {deal_id} not found.")
+            return None, {"errors": [f"Deal with id {deal_id} not found"]}
+
+        logger.info(f"Deal update successfully - ID {deal_id}")
+        return updated_deal, None
+
+    def delete_deal(self, deal_id):
+        """
+        Deletes a deal by id.
+        Returns: (success: bool, error: dict or None)
+        """
+
+        deleted = deal_repository.delete_deal(deal_id)
+
+        if not deleted:
+            logger.warning(f"Delete failed - deal ID {deal_id} not found")
+            return False, {"errors": [f"Deal with id {deal_id} not found"]}
+
+
+        logger.info(f"Deal deleted successfully - ID: {deal_id}")
+        return True, None
+
     def search_deals(self, params):
         """
         Searches deals using query parameters.
@@ -148,6 +188,31 @@ class DealService:
         logger.info(f"Recently viewed deals fetched - total: {len(recent)}")
         return recent
 
+    def get_popular_deals(self, limit=5):
+        """
+        Returns the most viewed deals.
+        Returns: list of dict
+        """
 
+        popular = recently_viewed_repository.get_most_viewed(limit=limit)
+        logger.info(f"Popular deals fetched total: {len(popular)}")
+        return popular
+
+class StatsService:
+    """
+    Handles API usage statistics business logic.
+    kept separate from DealService for single responsibility
+    stats are about the API itself, not about deals.
+    """
+
+    def get_stats(self):
+        """
+        Returns overall API usage statics.
+        """
+
+        stats = stats_repository.get_stats()
+        logger.info(f"API stats fetched total requests: {stats['total_requests']}")
+        return stats
+        
 #single shared instance this instance will be used in the routes.
 deal_service = DealService()
