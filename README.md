@@ -138,23 +138,66 @@ Success response (201):
 
 Example: `/deals/1`
 
-### 4. Search Deals
+### 4. Update a Deal
+**PUT** `/deals/<id>`
+
+Same body as Add Deal - all fields required.
+
+```json
+{
+    "destination": "Dubai",
+    "price": 6000,
+    "platform": "Booking",
+    "rating": 4.8,
+    "travel_type": "Luxury"
+}
+```
+
+### 5. Delete a Deal
+**DELETE** `/deals/<id>`
+
+### 6. Search Deals
 
 **GET** `/deals/search`
 
 At least one query parameter required:
 
-### 5. Filter Deals by Price
+### 7. Filter Deals by Price
 
 **GET** `/deals/filter`
 
-### 6. Sort Deals
+### 8. Sort Deals
 
 **GET** `/deals/sort`
 
-### 7. Recently Viewed Deals
+### 9. Recently Viewed Deals
 
 **GET** `/deals/recent`
+
+Last 10 viewed deals, most recent first.
+
+### 10. Popular Deals
+**GET** `/deals/popular`
+
+Deals ordered by number of views.
+
+### 11. API Usage Statistics
+**GET** `/stats`
+
+```json
+{
+    "status": "success",
+    "data": {
+        "total_requests": 50,
+        "successful_requests": 45,
+        "failed_requests": 5,
+        "most_searched_destination": {
+            "destination": "dubai",
+            "search_count": 3
+        }
+    }
+}
+```
 
 Returns last 10 viewed deals, most recent first.
 A deal is tracked when you access `GET /deals/<id>`.
