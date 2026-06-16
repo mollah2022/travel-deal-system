@@ -161,6 +161,29 @@ def get_recently_viewed():
         "data": recent
     }), 200
 
+@deal_bp.route('/popular', methods=['GET'])
+def get_popular_deals():
+    """
+    GET/deals/popular
+    Returns the most viewed deals.
+    """
+
+    popular = deal_service.get_popular_deals()
+
+    if not popular:
+        return jsonify({
+            "status": "success",
+            "message": "No view date availabe yet.",
+            "count": 0,
+            "data": []
+        }), 200
+
+    return jsonify({
+        "status": "success",
+        "count": len(popular),
+        "data": popular
+    }), 200
+
 @deal_bp.route('/<int:deal_id>',methods=['GET'])
 def get_deal(deal_id):
     """
@@ -179,3 +202,61 @@ def get_deal(deal_id):
         "status": "success",
         "data": deal
     }),200
+
+@deal_bp.route('/<int:deal_id>', methods=['PUT'])
+def update_deal(deal_id):
+    """
+    PUT /deals/<id>
+    Updates an existing travel deal. All fields required (same as cerate).
+    """
+
+    data = request.get_json(silent=True)
+
+    if data is None:
+        logger.warning(f"Update failed for deal ID {deal_id} invalid or missing JSON body")
+        return jsonify({
+            "status": "error",
+            "message": "Request body must be valid JSON"
+        }), 400
+
+    deal, error = deal_service.update_deal(deal_id, data)
+
+
+    if error:
+        # Distinguish between not found and validation failed
+        if "not found" in error["errors"][0]:
+            return jsonify({
+                "status": "error",
+                "message": error["errors"][0]
+            }), 404
+
+        return jsonify({
+            "status": "error",
+            "message": "Validation failed.",
+            "details": error["errors"]
+        }), 400
+
+    return jsonify({
+        "status": "success",
+        "message": "Travel deal update successfully.",
+        "data": deal
+    }), 200
+
+@deal_bp.route('/<int:deal_id>', methods=['DELETE'])
+def delete_deal(deal_id):
+    """
+    DELETE /deals/<id>
+    Deletes a travel deal.
+    """
+    success, error = deal_service.delete_deal(deal_id)
+
+    if not success:
+        return jsonify({
+            "status": "error",
+            "message": error["errors"][0]
+        }), 404
+    
+    return jsonify({
+        "status": "success",
+        "message": f"Deal with id {deal_id} deleted successfully."
+    }), 200

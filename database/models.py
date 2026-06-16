@@ -41,7 +41,7 @@ class RecentlyViewed(db.Model):
     viewed_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Deal er sathe relationship
-    deal = db.relationship('Deal', backref='views')
+    deal = db.relationship('Deal', backref=db.backref('view', cascade='all, delete-orphan'))
 
     def to_dict(self):
         return {

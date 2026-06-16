@@ -1,6 +1,6 @@
-from database.models import db, Deal, RecentlyViewed 
+from database.models import db, Deal, RecentlyViewed, ApiStat, SearchLog
 from collections import deque
-
+from sqlalchemy import func
 
 class DealRepository:
     """
@@ -44,7 +44,7 @@ class DealRepository:
 
         return deal.to_dict()
 
-    def update_deals(self, deal_id, deal_data):
+    def update_deal(self, deal_id, deal_data):
         """
         update an existing deal with new data.
         Returns: updated deal dict, or None if not found.
@@ -73,7 +73,7 @@ class DealRepository:
             return None
         
         db.session.delete(deal)
-        db.commit()
+        db.session.commit()
         return True
 
     def search_deals(self,destination=None, platform=None, travel_type=None):

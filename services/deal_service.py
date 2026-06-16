@@ -1,4 +1,4 @@
-from database.db import deal_repository, recently_viewed_repository
+from database.db import deal_repository, recently_viewed_repository, stats_repository
 from utils.validators import (
     validate_deal_data,
     validate_search_params,
@@ -74,7 +74,7 @@ class DealService:
             return None, {"errors": errors}
 
         #step 2: check deal exists, then update
-        update_deal = deal_repository.update_deal(deal_id, data)
+        updated_deal = deal_repository.update_deal(deal_id, data)
 
         if updated_deal is None:
             logger.warning(f"Update failed - deal ID {deal_id} not found.")
@@ -216,3 +216,4 @@ class StatsService:
         
 #single shared instance this instance will be used in the routes.
 deal_service = DealService()
+stats_service = StatsService()
