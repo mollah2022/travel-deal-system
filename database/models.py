@@ -53,3 +53,33 @@ class RecentlyViewed(db.Model):
             "travel_type": self.deal.travel_type,
             "viewed_at": self.viewed_at.strftime("%Y-%m-%d %H:%M:%S")
         }
+
+class ApiStat(db.Model):
+    """
+    Single-row table that tracks overall API usage counters.
+    """
+    __tablename__ = "api_stats"
+
+    id = db.Column(db.Integer, primary_key=True)
+    total_requests = db.Column(db.Integer, default=0)
+    successful_requests = db.Column(db.Integer, default=0)
+    failed_requests = db.Column(db.Integer, default=0)
+
+    def to_dict(self):
+        return {
+            "total_requests": self.total_requests,
+            "successful_requests": self.successful_requests,
+            "failed_requests": self.failed_requests
+        }
+
+
+class SearchLog(db.Model):
+    """
+    Logs each search keyword used, to calculate most searched destination.
+    """
+    __tablename__ = "search_logs"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    destination = db.Column(db.String(100), nullable=False)
+    searched_at = db.Column(db.DateTime, default=datetime.utcnow) 
+
