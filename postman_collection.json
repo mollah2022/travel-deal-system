@@ -366,6 +366,62 @@
         }
       },
       "response": []
+    },
+{
+  "name": "Update Deal",
+  "request": {
+    "method": "PUT",
+    "header": [{ "key": "Content-Type", "value": "application/json" }],
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"destination\": \"Dubai Updated\",\n  \"price\": 6000,\n  \"platform\": \"Booking\",\n  \"rating\": 4.8,\n  \"travel_type\": \"Luxury\"\n}"
+    },
+    "url": {
+      "raw": "{{base_url}}/deals/1",
+      "host": ["{{base_url}}"],
+      "path": ["deals", "1"]
     }
+  },
+  "response": []
+},
+{
+  "name": "Delete Deal",
+  "request": {
+    "method": "DELETE",
+    "header": [],
+    "url": {
+      "raw": "{{base_url}}/deals/1",
+      "host": ["{{base_url}}"],
+      "path": ["deals", "1"]
+    }
+  },
+  "response": []
+},
+{
+  "name": "Popular Deals",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{base_url}}/deals/popular",
+      "host": ["{{base_url}}"],
+      "path": ["deals", "popular"]
+    }
+  },
+  "response": []
+},
+{
+  "name": "API Statistics",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{base_url}}/stats",
+      "host": ["{{base_url}}"],
+      "path": ["stats"]
+    }
+  },
+  "response": []
+}
   ]
 }
