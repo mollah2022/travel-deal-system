@@ -145,3 +145,12 @@ def validate_sort_params(params):
         errors.append(f"order must be one of {VALID_SORT_ORDERS}.")
         
     return (len(errors) == 0), errors
+
+def validate_update_data(data):
+    """
+    Validate data for updating a deal (PUT /deals/<id>).
+    Follows the SAME rules as create validation (all fields required),
+    as per  requirement: "Update validation must match create validation".
+    Returns: (is_valid: bool, errors: list)
+    """
+    return validate_deal_data(data)
