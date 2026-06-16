@@ -44,6 +44,38 @@ class DealRepository:
 
         return deal.to_dict()
 
+    def update_deals(self, deal_id, deal_data):
+        """
+        update an existing deal with new data.
+        Returns: updated deal dict, or None if not found.
+        """
+        deal = Deal.query.get(deal_id)
+        if deal is None:
+            return None
+
+        deal.destination = deal_data["destination"]
+        deal.price = deal_data["price"]
+        deal.platform = deal_data["platform"]
+        deal.rating = deal_data["rating"]
+        deal.travel_type = deal_data["travel_type"]
+
+        db.session.commit()
+        return deal.to_dict()
+
+    def delete_deal(self, deal_id):
+        """
+        Deletes a  deal by id.
+        Returns: True if deleted, False if not found.
+        """
+
+        deal = Deal.query.get(deal_id)
+        if deal is None:
+            return None
+        
+        db.session.delete(deal)
+        db.commit()
+        return True
+
     def search_deals(self,destination=None, platform=None, travel_type=None):
         """
         Partial, case-insensitive search by destination, platform, travel_type.
@@ -143,8 +175,101 @@ class RecentlyViewedRepository:
         ).all()
         return [r.to_dict() for r in recent]
 
+    def get_most_viewed(self, limit=5):
+        """
+        Returns deals ordered by how many times they were viewed.
+        Uses all time view records (not just the last 10).
+        """
 
+        results = (
+            db.session.query(
+                RecentlyViewed.deal_id,
+                func.count(RecentlyViewed.deal_id).label("view_count")
+            )
+
+            .group_by(RecentlyViewed.deal_id)
+            .order_by(func.count(RecentlyViewed.deal_id).desc())
+            .limit(limit)
+            .all()
+        )
+
+        popular_deals = []
+        for deal_id, view_count in results:
+            deal = Deal.query.get(deal_id)
+            if deal:
+                deal_dict = deal.to_dict()
+                deal_dict["view_count"] = view_count
+                popular_deals.append(deal_dict)
+
+        return popular_deals
+
+
+class StatsRepository:
+    """
+    Tracks API usage statistics and search activity.
+    """
+
+    def _get_or_create_stat_row(self):
+        """
+        Internal helper - ensures a single ApiStat row always exists.
+        """
+        stat = ApiStat.query.first()
+        if stat is None:
+            stat = ApiStat(total_requests=0, successful_requests=0, failed_requests=0)
+            db.session.add(stat)
+            db.session.commit()
+        return stat
+
+    def record_request(self, success=True):
+        """
+        Increments total/successful/failed request counters.
+        """
+        stat = self._get_or_create_stat_row()
+        stat.total_requests += 1
+        if success:
+            stat.successful_requests += 1
+        else:
+            stat.failed_requests += 1
+        db.session.commit()
+
+    def log_search(self, destination):
+        """
+        Records a search keyword for "most searched destination" stats.
+        """
+        if destination:
+            entry = SearchLog(destination=destination.lower())
+            db.session.add(entry)
+            db.session.commit()
+
+    def get_most_searched_destination(self):
+        """
+        Returns the most frequently searched destination, or None.
+        """
+        result = (
+            db.session.query(
+                SearchLog.destination,
+                func.count(SearchLog.destination).label("count")
+            )
+            .group_by(SearchLog.destination)
+            .order_by(func.count(SearchLog.destination).desc())
+            .first()
+        )
+        if result is None:
+            return None
+        return {"destination": result[0], "search_count": result[1]}
+
+    def get_stats(self):
+        """
+        Returns full API usage statistics.
+        """
+        stat = self._get_or_create_stat_row()
+        data = stat.to_dict()
+        data["most_searched_destination"] = self.get_most_searched_destination()
+        return data
+
+  
 
 # Single shared instance - it will be imported and used in the service layer.
 deal_repository = DealRepository()
 recently_viewed_repository = RecentlyViewedRepository()
+stats_repository = StatsRepository()
