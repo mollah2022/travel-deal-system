@@ -28,13 +28,13 @@ A REST API built with Flask to manage travel deals. You can add deals, view them
 Step 1: Clone the project from GitHub
 
 ```bash
-git clone https://github.com/mollah2022/travel-deal-system.git
+git clone https://github.com/mollah2022/travel-deal-system-sajib.git
 ```
 
 Step 2: Go into the project folder
 
 ```bash
-cd travel-deal-system
+cd travel-deal-system-sajib
 ```
 
 Step 3: Create a virtual environment
